@@ -1,5 +1,4 @@
 library(rvest)
-library(RSelenium)
 library(purrr)
 
 gianyar <- read_html("https://www.tripadvisor.com/Hotel_Review-g297701-d7022088-Reviews-The_Kayon_Resort-Ubud_Gianyar_Bali.html")
@@ -30,3 +29,26 @@ reviews <- gianyar %>%
   html_nodes("#REVIEWS .partial_entry")%>%
   html_text()
 reviews
+
+## Using Selenium to scrape
+
+library(RSelenium)
+library(xml2)
+library(tidyverse)
+library(rvest)
+
+# access browser after setup virtual machine in docker
+remDr <- RSelenium::remoteDriver(remoteServerAddr = "192.168.99.100",
+                                 port = 4445L,
+                                 browserName = "chrome")
+remDr$open()
+
+remDr$navigate("https://www.tripadvisor.com/Hotel_Review-g297701-d7022088-Reviews-or{}-The_Kayon_Resort-Ubud_Gianyar_Bali.html#REVIEWS")
+
+remDr$screenshot(display = TRUE) # check browser page
+
+gianyar.web.element <- remDr$findElement(using = 'css selector', ".ulBlueLinks") # find more button
+gianyar.web.element$clickElement() # click more button
+
+gianyar.review.element <- remDr$findElements(using = 'css selector', ".partial_entry") # scrape review
+css.text.headers <- unlist(lapply(gianyar.review.element, function(x) {x$getElementText()}))
