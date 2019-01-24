@@ -37,13 +37,16 @@ library(xml2)
 library(tidyverse)
 library(rvest)
 
+# docker run -d -p 4445:4444 selenium/standalone-chrome
 # access browser after setup virtual machine in docker
 remDr <- RSelenium::remoteDriver(remoteServerAddr = "192.168.99.100",
                                  port = 4445L,
                                  browserName = "chrome")
 remDr$open()
 
-remDr$navigate("https://www.tripadvisor.com/Hotel_Review-g297701-d7022088-Reviews-or{}-The_Kayon_Resort-Ubud_Gianyar_Bali.html#REVIEWS")
+page <- "https://www.tripadvisor.com/Hotel_Review-g297701-d7022088-Reviews-or{}-The_Kayon_Resort-Ubud_Gianyar_Bali.html#REVIEWS"
+
+remDr$navigate(page)
 
 remDr$screenshot(display = TRUE) # check browser page
 
@@ -52,3 +55,5 @@ gianyar.web.element$clickElement() # click more button
 
 gianyar.review.element <- remDr$findElements(using = 'css selector', ".partial_entry") # scrape review
 css.text.headers <- unlist(lapply(gianyar.review.element, function(x) {x$getElementText()}))
+
+text.clean <- gsub("\\n", "", css.text.headers) # strip html markings
