@@ -48,7 +48,7 @@ page <- "https://www.tripadvisor.com/Hotel_Review-g297701-d7022088-Reviews-or{}-
 
 remDr$navigate(page)
 
-remDr$setTimeout(type = "implicit", milliseconds = 10000)
+remDr$setTimeout(type = "implicit", milliseconds = 10000) # set waiting time to loading page
 
 remDr$screenshot(display = TRUE) # check browser page
 
