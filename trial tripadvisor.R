@@ -48,12 +48,27 @@ page <- "https://www.tripadvisor.com/Hotel_Review-g297701-d7022088-Reviews-or{}-
 
 remDr$navigate(page)
 
+remDr$setTimeout(type = "implicit", milliseconds = 10000)
+
 remDr$screenshot(display = TRUE) # check browser page
 
-gianyar.web.element <- remDr$findElement(using = 'css selector', ".ulBlueLinks") # find more button
-gianyar.web.element$clickElement() # click more button
+x <- seq(1,10) # set number of pages
+df <- NULL 
+text.clean <- NULL
 
-gianyar.review.element <- remDr$findElements(using = 'css selector', ".partial_entry") # scrape review
-css.text.headers <- unlist(lapply(gianyar.review.element, function(x) {x$getElementText()}))
+for (i in x) {
+  
+  gianyar.web.element <- remDr$findElement(using = 'css selector', ".hotels-hotel-review-community-content-review-list-parts-ExpandableReview__cta--3_zOW") # find more button
+  gianyar.web.element$clickElement() # click more button
 
-text.clean <- gsub("\\n", "", css.text.headers) # strip html markings
+  gianyar.review.element <- remDr$findElements(using = 'css selector', ".common-text-ReadMore__content--2ufdh") # scrape review
+  css.text.headers <- unlist(lapply(gianyar.review.element, function(x) {x$getElementText()}))
+
+  text.clean <- gsub("\\n", "", css.text.headers) # strip html markings
+
+  gianyar.next.button <- remDr$findElement(using = 'css selector', ".next") #click next
+  gianyar.next.button$clickElement() #click next button
+  
+  df[[i]] <- text.clean
+
+}
