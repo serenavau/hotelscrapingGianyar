@@ -37,24 +37,26 @@ library(xml2)
 library(tidyverse)
 library(rvest)
 
-# docker run -d -p 4445:4444 selenium/standalone-chrome
+# docker run -d -p 4445:4444 selenium/standalone-firefox
 # access browser after setup virtual machine in docker
 remDr <- RSelenium::remoteDriver(remoteServerAddr = "192.168.99.100",
                                  port = 4445L,
-                                 browserName = "chrome")
+                                 browserName = "firefox")
 remDr$open()
 
 page <- "https://www.tripadvisor.com/Hotel_Review-g297701-d7022088-Reviews-or{}-The_Kayon_Resort-Ubud_Gianyar_Bali.html#REVIEWS"
 
 remDr$navigate(page)
 
-remDr$setTimeout(type = "implicit", milliseconds = 10000) # set waiting time to loading page
+remDr$setTimeout(type = "implicit", milliseconds = 50000) # set waiting time to loading page
 
 remDr$screenshot(display = TRUE) # check browser page
 
 x <- seq(1,10) # set number of pages
 df <- NULL 
 text.clean <- NULL
+
+pb <- txtProgressBar(min = 0, max = max(x), style = 3)
 
 for (i in x) {
   
@@ -70,5 +72,7 @@ for (i in x) {
   gianyar.next.button$clickElement() #click next button
   
   df[[i]] <- text.clean
+  
+  setTxtProgressBar(pb, i)
 
 }
