@@ -52,7 +52,7 @@ remDr$setTimeout(type = "implicit", milliseconds = 50000) # set waiting time to 
 
 remDr$screenshot(display = TRUE) # check browser page
 
-x <- seq(1,10) # set number of pages
+x <- seq(1,50) # set number of pages
 df <- NULL 
 text.clean <- NULL
 
@@ -76,3 +76,5 @@ for (i in x) {
   setTxtProgressBar(pb, i)
 
 }
+
+close(pb)
